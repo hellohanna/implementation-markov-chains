@@ -91,20 +91,23 @@ def make_text(chains, n, max_length):
 
     if len(words_copy) > 0:
         return " ".join(words_copy)
-    else:
+    elif words[len(words)-1].isalpha():
         words[len(words)-1] += "."
-        return " ".join(words)
+    else:
+        words[len(words)-1] = words[len(words)-1][:-2] + '.'
 
-def input_number(message, input_text):
+    return " ".join(words)
+
+def input_number(message, input_text, min_num = 1):
     words_list = input_text.split()
     number_of_words = len(words_list)
     while True:
         user_number = input(message)
         if user_number.isdigit() and user_number != '0':
             n = int(user_number)
-            if n < number_of_words:
+            if n < number_of_words and n >= min_num:
                 return n
-        print("Incorrect input. Try number between 1 and {}.".format(number_of_words-1))
+        print("Incorrect input. Try number between {} and {}.".format(min_num, number_of_words-1))
 
 
 if len(sys.argv) == 1:
@@ -117,7 +120,7 @@ else:
 input_text = open_and_read_file(input_path)
 
 n = input_number("Enter size of n-gram: ", input_text)
-max_length = input_number("Enter max limit for markov chain: ",input_text)
+max_length = input_number("Enter max limit for markov chain: ",input_text, n)
 
 # Get a Markov chain
 chains = make_chains(input_text, n)
