@@ -60,7 +60,7 @@ def make_chains(text_string, n):
     return chains
 
 
-def make_text(chains, n):
+def make_text(chains, n, max_length):
     """Return text from chains."""
 
     words = []
@@ -73,21 +73,33 @@ def make_text(chains, n):
     for i in range(n):
         words.append(next_key[i])
 
-    while next_key in chains:
+    while next_key in chains and len(words) < max_length:
         random_value = choice(chains[next_key])
         words.append(random_value)
         next_key_lst = list(next_key)[1:]
         next_key_lst.append(random_value)
         next_key = tuple(next_key_lst)
 
+    words_copy = words[:]
+    while len(words_copy) > 0:
+        last_word = words_copy[len(words_copy)-1]
+        last_char = last_word[len(last_word)-1] 
+        if last_char in ['.','!','?']:
+            break
+        else:
+            del words_copy[len(words_copy)-1]
 
-    return " ".join(words)
+    if len(words_copy) > 0:
+        return " ".join(words_copy)
+    else:
+        words[len(words)-1] += "."
+        return " ".join(words)
 
-def input_number(input_text):
+def input_number(message, input_text):
     words_list = input_text.split()
     number_of_words = len(words_list)
     while True:
-        user_number = input("Enter size of n-gram: ")
+        user_number = input(message)
         if user_number.isdigit() and user_number != '0':
             n = int(user_number)
             if n < number_of_words:
@@ -104,12 +116,13 @@ else:
 # Open the file and turn it into one long string
 input_text = open_and_read_file(input_path)
 
-n = input_number(input_text)
+n = input_number("Enter size of n-gram: ", input_text)
+max_length = input_number("Enter max limit for markov chain: ",input_text)
 
 # Get a Markov chain
 chains = make_chains(input_text, n)
 
 # Produce random text
-random_text = make_text(chains, n)
+random_text = make_text(chains, n, max_length)
 
 print(random_text)
