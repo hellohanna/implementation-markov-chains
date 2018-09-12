@@ -65,7 +65,10 @@ def make_text(chains, n):
 
     words = []
 
-    next_key = choice(list(chains.keys()))
+    while True:
+        next_key = choice(list(chains.keys()))
+        if next_key[0].istitle():
+            break
 
     for i in range(n):
         words.append(next_key[i])
@@ -80,14 +83,16 @@ def make_text(chains, n):
 
     return " ".join(words)
 
-def input_number():
+def input_number(input_text):
+    words_list = input_text.split()
+    number_of_words = len(words_list)
     while True:
         user_number = input("Enter size of n-gram: ")
         if user_number.isdigit() and user_number != '0':
             n = int(user_number)
-            return n
-        else:
-            print("Incorrect input. Try again.")
+            if n < number_of_words:
+                return n
+        print("Incorrect input. Try number between 1 and {}.".format(number_of_words-1))
 
 
 if len(sys.argv) == 1:
@@ -99,7 +104,7 @@ else:
 # Open the file and turn it into one long string
 input_text = open_and_read_file(input_path)
 
-n = input_number()
+n = input_number(input_text)
 
 # Get a Markov chain
 chains = make_chains(input_text, n)
