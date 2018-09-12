@@ -3,18 +3,25 @@
 from random import choice
 import sys
 
-def open_and_read_file(file_path):
+def open_and_read_file(file_path1,file_path2 =None):
     """Take file path as string; return text as string.
 
     Takes a string that is a file path, opens the file, and turns
     the file's contents as one string of text.
     """
 
-    f = open(file_path)
-    file_string = f.read()
-    f.close()
+    f1 = open(file_path1)
+    file_string1 = f1.read()
+    f1.close()
 
-    return file_string
+    if file_path2 != None:
+        f2 = open(file_path2)
+        file_string2 = f2.read()
+        f2.close
+        return file_string1 + ' ' + file_string2
+    else:
+        return file_string1
+
 
 
 def make_chains(text_string, n):
@@ -112,12 +119,15 @@ def input_number(message, input_text, min_num = 1):
 
 if len(sys.argv) == 1:
     input_path = "green-eggs.txt"
-else:
+    input_text = open_and_read_file(input_path)
+elif len(sys.argv) == 2:
     input_path = str(sys.argv[1])
+    input_text = open_and_read_file(input_path)
+elif len(sys.argv) == 3:
+    input_path1 = str(sys.argv[1])
+    input_path2 = str(sys.argv[2])
+    input_text = open_and_read_file(input_path1,input_path2)
 
-#input_path = "gettysburg.txt"
-# Open the file and turn it into one long string
-input_text = open_and_read_file(input_path)
 
 n = input_number("Enter size of n-gram: ", input_text)
 max_length = input_number("Enter max limit for markov chain: ",input_text, n)
